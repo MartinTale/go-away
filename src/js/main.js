@@ -3,9 +3,9 @@ let currentGameState = {
 	gameFinishedAt: null,
 	gameEnded: false,
 	worldStartedAt: Date.now(),
-	webMonetizationEnabled: false,
-	loggedInUsingNear: false,
-	isPremium: false,
+	webMonetizationEnabled: true,
+	loggedInUsingNear: true,
+	isPremium: true,
 	hasDoubleSpeedUnlocked: false,
 	highestStageUnclocked: 0,
 	soundOn: null,
@@ -112,7 +112,7 @@ const replaceText = (target, content) => {
 };
 
 const addContent = (target, content) => {
-	target.insertAdjacentHTML('beforeend', content);
+	target.insertAdjacentHTML("beforeend", content);
 };
 
 let random = null;
@@ -138,23 +138,23 @@ const getDuration = (d1, d2) => {
 	durationInSeconds -= minutes * 60;
 
 	if (hours > 0) {
-		return hours + 'h ' + minutes + 'm ' + durationInSeconds + 's';
+		return hours + "h " + minutes + "m " + durationInSeconds + "s";
 	} else {
-		return minutes + 'm ' + durationInSeconds + 's';
+		return minutes + "m " + durationInSeconds + "s";
 	}
 };
 
 const hexToRgbA = (hex, alpha = 1) => {
 	var c;
 	if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
-		c = hex.substring(1).split('');
+		c = hex.substring(1).split("");
 		if (c.length == 3) {
 			c = [c[0], c[0], c[1], c[1], c[2], c[2]];
 		}
-		c = '0x' + c.join('');
-		return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',' + alpha + ')';
+		c = "0x" + c.join("");
+		return "rgba(" + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(",") + "," + alpha + ")";
 	}
-	throw new Error('Bad Hex');
+	throw new Error("Bad Hex");
 };
 
 const detachElement = (targetElement) => {
@@ -162,12 +162,12 @@ const detachElement = (targetElement) => {
 
 	rootElement.appendChild(targetElement);
 
-	targetElement.style.position = 'fixed';
-	targetElement.style.left = x + 'px';
-	targetElement.style.top = y + 'px';
-	targetElement.style.width = width + 'px';
-	targetElement.style.height = height + 'px';
-	targetElement.style.zIndex = '5';
+	targetElement.style.position = "fixed";
+	targetElement.style.left = x + "px";
+	targetElement.style.top = y + "px";
+	targetElement.style.width = width + "px";
+	targetElement.style.height = height + "px";
+	targetElement.style.zIndex = "5";
 };
 // #endregion
 
@@ -178,27 +178,27 @@ const toggleClass = (target, className, val) => {
 
 const checkDangerStatus = (card) => {
 	if (currentGameState.shield > 0) {
-		toggleClass(card.cardElement, 'will-take-damage', false);
-		toggleClass(card.cardElement, 'will-die', false);
+		toggleClass(card.cardElement, "will-take-damage", false);
+		toggleClass(card.cardElement, "will-die", false);
 	} else if (currentGameState.health > card.damage) {
-		toggleClass(card.cardElement, 'will-take-damage', true);
-		toggleClass(card.cardElement, 'will-die', false);
+		toggleClass(card.cardElement, "will-take-damage", true);
+		toggleClass(card.cardElement, "will-die", false);
 	} else {
-		toggleClass(card.cardElement, 'will-take-damage', false);
-		toggleClass(card.cardElement, 'will-die', true);
+		toggleClass(card.cardElement, "will-take-damage", false);
+		toggleClass(card.cardElement, "will-die", true);
 	}
 };
 
 const checkExpireStatus = (card) => {
 	if (card.turnsBeforeCardExpires <= 1) {
-		toggleClass(card.cardElement, 'will-expire-in-two-turns', false);
-		toggleClass(card.cardElement, 'will-expire-next-turn', true);
+		toggleClass(card.cardElement, "will-expire-in-two-turns", false);
+		toggleClass(card.cardElement, "will-expire-next-turn", true);
 	} else if (card.turnsBeforeCardExpires <= 2) {
-		toggleClass(card.cardElement, 'will-expire-in-two-turns', true);
-		toggleClass(card.cardElement, 'will-expire-next-turn', false);
+		toggleClass(card.cardElement, "will-expire-in-two-turns", true);
+		toggleClass(card.cardElement, "will-expire-next-turn", false);
 	} else {
-		toggleClass(card.cardElement, 'will-expire-in-two-turns', false);
-		toggleClass(card.cardElement, 'will-expire-next-turn', false);
+		toggleClass(card.cardElement, "will-expire-in-two-turns", false);
+		toggleClass(card.cardElement, "will-expire-next-turn", false);
 	}
 };
 
@@ -226,25 +226,25 @@ const showPopup = (
 	buttons,
 	onClose = null,
 	full = false,
-	additonalClass = '',
+	additonalClass = "",
 	closeDelay = 0
 ) => {
 	popupId += 1;
 
-	let popupClass = 'popup';
+	let popupClass = "popup";
 	if (full) {
-		popupClass += ' full';
+		popupClass += " full";
 	}
 
-	popupClass += ' ' + additonalClass;
+	popupClass += " " + additonalClass;
 
 	let popup = `<div id="popup-${popupId}" class="popup-container"><div class="${popupClass}"><div class="popup-content">${content}</div><div class="popup-buttons">`;
 
 	buttons.forEach((button, buttonIndex) => {
-		let buttonClass = '';
+		let buttonClass = "";
 
 		if (button.locked) {
-			buttonClass = 'locked';
+			buttonClass = "locked";
 		}
 		popup += `<button id="popup-${popupId}-button-${buttonIndex}" class="popup-button ${buttonClass}">${button.content}</button>`;
 	});
@@ -254,12 +254,11 @@ const showPopup = (
 	addContent(rootElement, popup);
 
 	updateLockIcons();
-	addNearClickEvents();
 
 	const popupContainerElement = querySelector(`#popup-${popupId}`);
 
-	const popupElement = querySelector('.popup', popupContainerElement);
-	addEventListener(popupElement, 'click', (e) => {
+	const popupElement = querySelector(".popup", popupContainerElement);
+	addEventListener(popupElement, "click", (e) => {
 		e.stopPropagation();
 	});
 
@@ -290,12 +289,12 @@ const showPopup = (
 	}
 
 	querySelectorAll(`#popup-${popupId} .popup-button`).forEach((button, index) => {
-		addEventListener(button, 'click', () => {
-			if (button.classList.contains('locked')) {
+		addEventListener(button, "click", () => {
+			if (button.classList.contains("locked")) {
 				return;
 			}
-			if (buttons[index].action === 'close') {
-				if (typeof onClose === 'function') {
+			if (buttons[index].action === "close") {
+				if (typeof onClose === "function") {
 					onClose();
 				}
 				removePopupContainer(popupContainerElement, speed, closeDelay);
@@ -324,8 +323,8 @@ const showPopup = (
 				from: from,
 				to: to,
 				onend(target) {
-					addEventListener(popupContainerElement, 'click', () => {
-						if (typeof onClose === 'function') {
+					addEventListener(popupContainerElement, "click", () => {
+						if (typeof onClose === "function") {
 							onClose();
 						}
 
@@ -340,17 +339,17 @@ const showPopup = (
 let gameSpeedButtonElement;
 
 const displayActiveGameSpeed = () => {
-	const gameSpeedElements = querySelectorAll('b', gameSpeedButtonElement);
+	const gameSpeedElements = querySelectorAll("b", gameSpeedButtonElement);
 
 	gameSpeedElements.forEach((gameSpeedElement, gameSpeedIndex) => {
 		if (gameSpeedIndex === 0 && currentGameState.gameSpeed === 1) {
-			toggleClass(gameSpeedElement, 'active', true);
+			toggleClass(gameSpeedElement, "active", true);
 		} else if (gameSpeedIndex === 1 && currentGameState.gameSpeed === 2) {
-			toggleClass(gameSpeedElement, 'active', true);
+			toggleClass(gameSpeedElement, "active", true);
 		} else if (gameSpeedIndex === 2 && currentGameState.gameSpeed === 4) {
-			toggleClass(gameSpeedElement, 'active', true);
+			toggleClass(gameSpeedElement, "active", true);
 		} else {
-			toggleClass(gameSpeedElement, 'active', false);
+			toggleClass(gameSpeedElement, "active", false);
 		}
 	});
 };
@@ -377,8 +376,8 @@ const initGameSpeed = () => {
 		gameControlElement,
 		`<button id="game-speed"><b>1x</b><b>2x</b><b>4x <b class="vip">V.I.P.</b></b></button>`
 	);
-	gameSpeedButtonElement = querySelector('#game-speed', gameControlElement);
-	addEventListener(gameSpeedButtonElement, 'click', changeGameSpeed);
+	gameSpeedButtonElement = querySelector("#game-speed", gameControlElement);
+	addEventListener(gameSpeedButtonElement, "click", changeGameSpeed);
 	displayActiveGameSpeed();
 	updateGameSpeedLock();
 };
@@ -388,12 +387,12 @@ const updateGameSpeedLock = () => {
 		currentGameState.hasDoubleSpeedUnlocked === false && currentGameState.isPremium === false;
 	const speed4locked = currentGameState.isPremium === false;
 
-	querySelectorAll('#game-speed > b', gameControlElement).forEach((speedButton, speedIndex) => {
+	querySelectorAll("#game-speed > b", gameControlElement).forEach((speedButton, speedIndex) => {
 		if (speedIndex == 1) {
-			toggleClass(speedButton, 'locked', speed2locked);
+			toggleClass(speedButton, "locked", speed2locked);
 		}
 		if (speedIndex == 2) {
-			toggleClass(speedButton, 'locked', speed4locked);
+			toggleClass(speedButton, "locked", speed4locked);
 		}
 	});
 
@@ -419,7 +418,6 @@ const initSocial = () => {
 			svgs.COFFEE
 		)}</a>`
 	);
-	addContent(gameControlElement, `<a class="near" href="#"><b>NEAR</b><span>LOGIN</span></a>`);
 };
 // #endregion
 
@@ -435,24 +433,24 @@ addContent(
 	)}</div></div>`
 );
 
-const rootElement = querySelector('#root');
-const gameControlElement = querySelector('#game-controls', rootElement);
-const backgroundElement = querySelector('#background');
-const yearElement = querySelector('#year');
+const rootElement = querySelector("#root");
+const gameControlElement = querySelector("#game-controls", rootElement);
+const backgroundElement = querySelector("#background");
+const yearElement = querySelector("#year");
 let yearAmountElement;
 let yearMaxElement;
 let yearSvgElement;
-const earthElement = querySelector('#earth');
-const healthElement = querySelector('#health');
+const earthElement = querySelector("#earth");
+const healthElement = querySelector("#health");
 let healthAmountElement;
 let healthSvgElement;
-const shieldElement = querySelector('#shield');
+const shieldElement = querySelector("#shield");
 let shieldAmountElement;
 let shieldSvgElement;
-const damageElement = querySelector('#damage');
+const damageElement = querySelector("#damage");
 let damageAmountElement;
 let damageSvgElement;
-const cardSlotElements = querySelectorAll('.card-slot');
+const cardSlotElements = querySelectorAll(".card-slot");
 // #endregion
 
 // #region - Animations
@@ -501,7 +499,7 @@ const animateNumber = (targetElement, from, to, colorClass = null, delay = 0, on
 			if (colorClass != null) {
 				toggleClass(targetElement, colorClass, false);
 			}
-			if (typeof onEnd === 'function') {
+			if (typeof onEnd === "function") {
 				onEnd();
 			}
 		},
@@ -627,7 +625,7 @@ const zoomUpAndFadeOut = (targetElement, delay = 0, onEnd = null) => {
 			scaleY: 1.1,
 		},
 		onend(target) {
-			if (typeof onEnd === 'function') {
+			if (typeof onEnd === "function") {
 				onEnd();
 			}
 		},
@@ -719,7 +717,7 @@ const playAndFadeOut = (targetElement, directionElement, onEnd) => {
 									opacity: 0,
 								},
 								onend(target) {
-									if (typeof onEnd === 'function') {
+									if (typeof onEnd === "function") {
 										onEnd();
 									}
 								},
@@ -764,9 +762,9 @@ const zoomBounceAndFadeIn = (targetElement, delay = 0) => {
 // #region - One Time Use
 const addStarBackground = () => {
 	for (let i = 0; i < 50; i += 1) {
-		addContent(backgroundElement, getSVG(svgs.STAR, '#ffffff'));
+		addContent(backgroundElement, getSVG(svgs.STAR, "#ffffff"));
 	}
-	querySelectorAll('#background svg').forEach((star) => {
+	querySelectorAll("#background svg").forEach((star) => {
 		star.style.left = `${randomIntFromInterval(-5, mathMin(495, screenWidth - 5))}px`;
 		star.style.top = `${randomIntFromInterval(-5, mathMin(695, screenHeight - 5))}px`;
 		star.style.transform = `rotate(${randomIntFromInterval(0, 360)}deg) scale(${
@@ -781,45 +779,39 @@ const initElements = () => {
 
 	addContent(yearElement, getSVG(svgs.EARTH));
 	addContent(yearElement, `<b class="current-year"></b>&nbsp;<b class="max-year"></b>`);
-	yearAmountElement = querySelector('.current-year', yearElement);
-	yearMaxElement = querySelector('.max-year', yearElement);
-	yearSvgElement = querySelector('svg', yearElement);
+	yearAmountElement = querySelector(".current-year", yearElement);
+	yearMaxElement = querySelector(".max-year", yearElement);
+	yearSvgElement = querySelector("svg", yearElement);
 
 	addContent(healthElement, getSVG(svgs.HEART));
-	addContent(healthElement, '<b></b>');
-	healthAmountElement = querySelector('b', healthElement);
-	healthSvgElement = querySelector('svg', healthElement);
+	addContent(healthElement, "<b></b>");
+	healthAmountElement = querySelector("b", healthElement);
+	healthSvgElement = querySelector("svg", healthElement);
 
 	addContent(shieldElement, getSVG(svgs.SHIELD));
-	addContent(shieldElement, '<b></b>');
-	shieldAmountElement = querySelector('b', shieldElement);
-	shieldSvgElement = querySelector('svg', shieldElement);
+	addContent(shieldElement, "<b></b>");
+	shieldAmountElement = querySelector("b", shieldElement);
+	shieldSvgElement = querySelector("svg", shieldElement);
 
 	addContent(damageElement, getSVG(svgs.SWORD));
-	addContent(damageElement, '<b></b>');
-	damageAmountElement = querySelector('b', damageElement);
-	damageSvgElement = querySelector('svg', damageElement);
+	addContent(damageElement, "<b></b>");
+	damageAmountElement = querySelector("b", damageElement);
+	damageSvgElement = querySelector("svg", damageElement);
 
 	cardSlotElements.forEach((cardSlot, cardIndex) => {
-		addEventListener(cardSlot, 'click', () => playCard(cardIndex));
+		addEventListener(cardSlot, "click", () => playCard(cardIndex));
 	});
-
-	addNearClickEvents();
-};
-
-const addNearClickEvents = () => {
-	querySelectorAll('.near').forEach((near) => (near.onclick = redirectToNear));
 };
 
 const setupWorld = (world) => {
 	if (currentGameState.icon == null) {
 		Object.assign(currentGameState, worlds[currentGameState.world]);
 	}
-	toggleClass(earthElement, 'moon', world === 0);
-	toggleClass(earthElement, 'mars', world === 2);
-	toggleClass(earthElement, 'death-star', world === 3);
+	toggleClass(earthElement, "moon", world === 0);
+	toggleClass(earthElement, "mars", world === 2);
+	toggleClass(earthElement, "death-star", world === 3);
 
-	querySelectorAll('#earth > svg', rootElement).forEach((svg) => svg.remove());
+	querySelectorAll("#earth > svg", rootElement).forEach((svg) => svg.remove());
 	console.log(worlds, world);
 	addContent(earthElement, getSVG(worlds[world].icon));
 
@@ -830,12 +822,12 @@ const setupWorld = (world) => {
 	replaceText(damageAmountElement, currentGameState.damage);
 
 	cardSlotElements.forEach((cardContainer) => {
-		cardContainer.style.display = 'none';
-		cardContainer.innerHTML = '';
+		cardContainer.style.display = "none";
+		cardContainer.innerHTML = "";
 	});
 
 	currentGameState.cards.forEach((card, index) => {
-		cardSlotElements[index].style.display = 'flex';
+		cardSlotElements[index].style.display = "flex";
 	});
 
 	currentGameState.cards.forEach((card, index) => {
@@ -1055,17 +1047,17 @@ const transform = (target, data) => {
 	}
 
 	if (transformation.length > 0) {
-		setStyle(target, 'transform', transformation.join(' '));
+		setStyle(target, "transform", transformation.join(" "));
 	}
 
 	if (data.opacity != null) {
-		setStyle(target, 'opacity', data.opacity);
+		setStyle(target, "opacity", data.opacity);
 	}
 
 	if (data.glow != null) {
 		setStyle(
 			target,
-			'filter',
+			"filter",
 			`drop-shadow(0 0 ${target.dataset.blur} ${hexToRgbA(target.dataset.color, data.glow)})`
 		);
 	}
@@ -1111,7 +1103,7 @@ const getSVG = (svg, ...colors) => {
 const monetization = document.monetization;
 
 updatePremiumState = () => {
-	if (currentGameState.webMonetizationEnabled || currentGameState.loggedInUsingNear) {
+	if (currentGameState.webMonetizationEnabled) {
 		currentGameState.isPremium = true;
 	} else {
 		currentGameState.isPremium = false;
@@ -1119,12 +1111,12 @@ updatePremiumState = () => {
 
 	saveGame(currentGameState);
 
-	const worldButtons = querySelectorAll('.world-select button');
+	const worldButtons = querySelectorAll(".world-select button");
 
 	if (worldButtons.length > 3) {
 		toggleClass(
 			worldButtons[3],
-			'locked',
+			"locked",
 			currentGameState.highestStageUnclocked < 3 || currentGameState.isPremium === false
 		);
 	}
@@ -1133,11 +1125,11 @@ updatePremiumState = () => {
 };
 
 if (monetization) {
-	addEventListener(monetization, 'monetizationstart', () => {
+	addEventListener(monetization, "monetizationstart", () => {
 		currentGameState.webMonetizationEnabled = true;
 		updatePremiumState();
 	});
-	addEventListener(monetization, 'monetizationstop', () => {
+	addEventListener(monetization, "monetizationstop", () => {
 		currentGameState.webMonetizationEnabled = false;
 		updatePremiumState();
 	});
@@ -1146,13 +1138,13 @@ if (monetization) {
 
 // #region - Save/Load Game
 const saveGame = (state) => {
-	localStorage.setItem('go-away', JSON.stringify(state));
+	localStorage.setItem("go-away", JSON.stringify(state));
 
 	return state;
 };
 
 const loadGame = (forceNew = false) => {
-	const state = JSON.parse(localStorage.getItem('go-away'));
+	const state = JSON.parse(localStorage.getItem("go-away"));
 
 	if (state == null || forceNew) {
 		saveGame(currentGameState);
@@ -3608,16 +3600,16 @@ const enableSound = () => {
 	zzfxX.resume();
 	currentGameState.soundOn = true;
 	saveGame(currentGameState);
-	setStyle(soundOffElement, 'display', 'none');
-	setStyle(soundOnElement, 'display', 'block');
+	setStyle(soundOffElement, "display", "none");
+	setStyle(soundOnElement, "display", "block");
 };
 
 const disableSound = () => {
 	zzfxX.suspend();
 	currentGameState.soundOn = false;
 	saveGame(currentGameState);
-	setStyle(soundOnElement, 'display', 'none');
-	setStyle(soundOffElement, 'display', 'block');
+	setStyle(soundOnElement, "display", "none");
+	setStyle(soundOffElement, "display", "block");
 };
 
 const initSound = () => {
@@ -3626,19 +3618,19 @@ const initSound = () => {
 	addContent(gameControlElement, `<button id="sound-on">${getSVG(svgs.SOUND_ON)}</button>`);
 	addContent(gameControlElement, `<button id="sound-off">${getSVG(svgs.SOUND_OFF)}</button>`);
 
-	soundOnElement = querySelector('#sound-on', gameControlElement);
-	soundOffElement = querySelector('#sound-off', gameControlElement);
+	soundOnElement = querySelector("#sound-on", gameControlElement);
+	soundOffElement = querySelector("#sound-off", gameControlElement);
 
 	if (currentGameState.soundOn === null) {
 		showPopup(
-			'Play with sound?',
+			"Play with sound?",
 			[
 				{
-					content: 'No',
-					action: 'close',
+					content: "No",
+					action: "close",
 				},
 				{
-					content: 'Yes',
+					content: "Yes",
 					action: () => {
 						enableSound();
 					},
@@ -3648,13 +3640,13 @@ const initSound = () => {
 				disableSound();
 			},
 			false,
-			'',
+			"",
 			500
 		);
 	} else if (currentGameState.soundOn === true) {
-		addEventListener(document, 'click', function startInitialSound() {
+		addEventListener(document, "click", function startInitialSound() {
 			zzfxX.resume();
-			removeEventListener(document, 'click', startInitialSound);
+			removeEventListener(document, "click", startInitialSound);
 		});
 	} else {
 		disableSound();
@@ -3666,11 +3658,11 @@ const initSound = () => {
 		disableSound();
 	}
 
-	addEventListener(soundOnElement, 'click', () => {
+	addEventListener(soundOnElement, "click", () => {
 		disableSound();
 	});
 
-	addEventListener(soundOffElement, 'click', () => {
+	addEventListener(soundOffElement, "click", () => {
 		enableSound();
 	});
 };
@@ -3764,7 +3756,7 @@ const nextYear = () => {
 		animationTarget.YEAR,
 		() => {
 			animateNumber(yearAmountElement, oldYear, newYear);
-			glowElementInAndOut(yearSvgElement, '5px', '#48baff', 300);
+			glowElementInAndOut(yearSvgElement, "5px", "#48baff", 300);
 			cardIsPlaying = false;
 		},
 		700
@@ -3814,24 +3806,24 @@ const openWorld = (world) => {
 
 const showWorldSelectScreen = () => {
 	showPopup(
-		`Select a World<p>Become <b>V.I.P.</b> and unlock <b>4x</b> speed and <b>Death Star</b> world with <a target="_blank" href="https://coil.com/">Coil</a> membership or <a class="near" href="#">NEAR</a> login!</p>`,
+		`Select a World<p>Become <b>V.I.P.</b> and unlock <b>4x</b> speed and <b>Death Star</b> world with <a target="_blank" href="https://coil.com/">Coil</a> membership!</p>`,
 		[
 			{
-				content: getSVG(svgs.MOON) + '<b>Moon</b>',
+				content: getSVG(svgs.MOON) + "<b>Moon</b>",
 				action: () => {
 					openWorld(0);
 				},
 				locked: false,
 			},
 			{
-				content: getSVG(svgs.EARTH) + '<b>Earth</b>',
+				content: getSVG(svgs.EARTH) + "<b>Earth</b>",
 				action: () => {
 					openWorld(1);
 				},
 				locked: currentGameState.highestStageUnclocked < 1,
 			},
 			{
-				content: getSVG(svgs.MARS) + '<b>Mars</b>',
+				content: getSVG(svgs.MARS) + "<b>Mars</b>",
 				action: () => {
 					openWorld(2);
 				},
@@ -3847,7 +3839,7 @@ const showWorldSelectScreen = () => {
 		],
 		() => {},
 		true,
-		'world-select'
+		"world-select"
 	);
 };
 
@@ -3880,17 +3872,17 @@ const showResultScreen = (message) => {
 	currentGameState.gameEnded = true;
 	const buttons = [
 		{
-			content: 'World Select',
+			content: "World Select",
 			action: showWorldSelectScreen,
 		},
 	];
 
-	let popUpClass = '';
+	let popUpClass = "";
 
 	if (playerHasLost()) {
-		popUpClass = 'lost';
+		popUpClass = "lost";
 		buttons.push({
-			content: 'Try Again',
+			content: "Try Again",
 			action: retryWorld,
 		});
 	}
@@ -3899,24 +3891,24 @@ const showResultScreen = (message) => {
 		popUpClass = `won`;
 
 		if (currentGameState.world === 0) {
-			popUpClass += ' moon';
+			popUpClass += " moon";
 		}
 
 		if (currentGameState.world === 1) {
-			popUpClass += ' earth';
+			popUpClass += " earth";
 		}
 
 		if (currentGameState.world === 2) {
-			popUpClass += ' mars';
+			popUpClass += " mars";
 		}
 
 		if (currentGameState.world === 3) {
-			popUpClass += ' death-star';
+			popUpClass += " death-star";
 		}
 
 		if (gameIsFinished() === false) {
 			buttons.push({
-				content: 'Next World',
+				content: "Next World",
 				action: nextWorld,
 			});
 		}
@@ -3959,14 +3951,14 @@ const playCard = (cardIndex) => {
 
 		currentGameState.cards.forEach((card, index) => {
 			if (card !== null && (card.played === true || cardIndex != index)) {
-				if (typeof card.onTurn === 'function') {
+				if (typeof card.onTurn === "function") {
 					card.onTurn();
 				}
 			}
 		});
 
 		currentGameState.cards.forEach((card) => {
-			if (card !== null && typeof card.onEndTurn === 'function') {
+			if (card !== null && typeof card.onEndTurn === "function") {
 				card.onEndTurn();
 			}
 		});
@@ -4033,7 +4025,7 @@ const decorateNormalCard = (slot, card, icon, amount) => {
 		`<div class="card"><div class="effect">${amount}</div>${icon}</div>`
 	);
 
-	card.cardElement = querySelector('.card', card.cardContainerElement);
+	card.cardElement = querySelector(".card", card.cardContainerElement);
 
 	checkExpireStatus(card);
 };
@@ -4065,9 +4057,9 @@ class HealthCard {
 				playAndFadeOut(this.cardElement, healthSvgElement, () => {
 					this.cardElement.remove();
 				}); // 1,650 ms
-				animateNumber(healthAmountElement, oldHealth, newHealth, 'green', 1150);
+				animateNumber(healthAmountElement, oldHealth, newHealth, "green", 1150);
 				baunceElement(healthElement, 5, 1150);
-				glowElementInAndOut(healthSvgElement, '5px', '#d0021b', 200, 1150);
+				glowElementInAndOut(healthSvgElement, "5px", "#d0021b", 200, 1150);
 			},
 			1650
 		);
@@ -4085,7 +4077,7 @@ class HealthCard {
 				animationTarget.CARD_TURN,
 				() => {
 					playSound(cardExpiresSound);
-					this.cardElement.style.filter = 'grayscale(1)';
+					this.cardElement.style.filter = "grayscale(1)";
 					requestAnimationFrameLocal(() => {
 						baunceElement(this.cardElement, 20);
 						zoomUpAndFadeOut(this.cardElement, 500, () => {
@@ -4142,9 +4134,9 @@ class ShieldCard {
 				playAndFadeOut(this.cardElement, shieldSvgElement, () => {
 					this.cardElement.remove();
 				}); // 1,650 ms
-				animateNumber(shieldAmountElement, oldShield, newShield, 'green', 1150);
+				animateNumber(shieldAmountElement, oldShield, newShield, "green", 1150);
 				baunceElement(shieldElement, 5, 1150);
-				glowElementInAndOut(shieldSvgElement, '5px', '#48baff', 200, 1150);
+				glowElementInAndOut(shieldSvgElement, "5px", "#48baff", 200, 1150);
 			},
 			1650
 		);
@@ -4162,7 +4154,7 @@ class ShieldCard {
 				animationTarget.CARD_TURN,
 				() => {
 					playSound(cardExpiresSound);
-					this.cardElement.style.filter = 'grayscale(1)';
+					this.cardElement.style.filter = "grayscale(1)";
 					requestAnimationFrameLocal(() => {
 						baunceElement(this.cardElement, 20);
 						zoomUpAndFadeOut(this.cardElement, 500, () => {
@@ -4219,9 +4211,9 @@ class DamageCard {
 				playAndFadeOut(this.cardElement, damageSvgElement, () => {
 					this.cardElement.remove();
 				}); // 1,650 ms
-				animateNumber(damageAmountElement, oldDamage, newDamage, 'green', 1150);
+				animateNumber(damageAmountElement, oldDamage, newDamage, "green", 1150);
 				baunceElement(damageElement, 5, 1150);
-				glowElementInAndOut(damageSvgElement, '5px', '#d0021b', 200, 1150);
+				glowElementInAndOut(damageSvgElement, "5px", "#d0021b", 200, 1150);
 			},
 			1650
 		);
@@ -4239,7 +4231,7 @@ class DamageCard {
 				animationTarget.CARD_TURN,
 				() => {
 					playSound(cardExpiresSound);
-					this.cardElement.style.filter = 'grayscale(1)';
+					this.cardElement.style.filter = "grayscale(1)";
 					requestAnimationFrameLocal(() => {
 						baunceElement(this.cardElement, 20);
 						zoomUpAndFadeOut(this.cardElement, 500, () => {
@@ -4283,7 +4275,7 @@ class EnemyCard {
 				animationTarget.PLAY_CARD,
 				() => {
 					playSound(laserShotSound);
-					animateNumber(this.shieldAmountElement, oldShield, newShield, 'red');
+					animateNumber(this.shieldAmountElement, oldShield, newShield, "red");
 					baunceElement(this.cardElement, 20);
 				},
 				900
@@ -4299,7 +4291,7 @@ class EnemyCard {
 					animationTarget.PLAY_CARD,
 					() => {
 						playSound(explosionSound);
-						animateNumber(this.healthAmountElement, oldHealth, newHealth, 'red');
+						animateNumber(this.healthAmountElement, oldHealth, newHealth, "red");
 						baunceElement(this.cardElement, 20);
 					},
 					900
@@ -4313,7 +4305,7 @@ class EnemyCard {
 					animationTarget.PLAY_CARD,
 					() => {
 						playSound(explosionSound);
-						animateNumber(this.healthAmountElement, oldHealth, 0, 'red');
+						animateNumber(this.healthAmountElement, oldHealth, 0, "red");
 						baunceElement(this.cardElement, 20);
 						zoomUpAndFadeOut(this.cardElement, 500, () => {
 							this.cardElement.remove();
@@ -4335,8 +4327,8 @@ class EnemyCard {
 				animationTarget.CARD_TURN,
 				() => {
 					playSound(blipSound);
-					animateNumber(this.turnsAmountElement, oldTurns, newTurns, 'red');
-					glowElementInAndOut(this.cardElement, '5px', '#f00', 300, 0);
+					animateNumber(this.turnsAmountElement, oldTurns, newTurns, "red");
+					glowElementInAndOut(this.cardElement, "5px", "#f00", 300, 0);
 				},
 				800
 			);
@@ -4360,10 +4352,10 @@ class EnemyCard {
 						playAndFadeOut(this.cardElement, shieldSvgElement, () => {
 							this.cardElement.remove();
 						}); // 1,650 ms
-						animateNumber(shieldAmountElement, oldShield, newShield, 'red', 1150);
+						animateNumber(shieldAmountElement, oldShield, newShield, "red", 1150);
 						baunceElement(shieldElement, 5, 1150);
-						glowElementInAndOut(shieldSvgElement, '5px', '#48baff', 200, 1150);
-						glowElementInAndOut(this.cardElement, '5px', '#f00', 0, 0);
+						glowElementInAndOut(shieldSvgElement, "5px", "#48baff", 200, 1150);
+						glowElementInAndOut(this.cardElement, "5px", "#f00", 0, 0);
 					},
 					1650
 				);
@@ -4386,10 +4378,10 @@ class EnemyCard {
 						playAndFadeOut(this.cardElement, healthSvgElement, () => {
 							this.cardElement.remove();
 						}); // 1,650 ms
-						animateNumber(healthAmountElement, oldHealth, newHealth, 'red', 1150);
+						animateNumber(healthAmountElement, oldHealth, newHealth, "red", 1150);
 						baunceElement(healthElement, 5, 1150);
-						glowElementInAndOut(healthSvgElement, '5px', '#d0021b', 200, 1150);
-						glowElementInAndOut(this.cardElement, '5px', '#f00', 0, 0);
+						glowElementInAndOut(healthSvgElement, "5px", "#d0021b", 200, 1150);
+						glowElementInAndOut(this.cardElement, "5px", "#f00", 0, 0);
 					},
 					1650
 				);
@@ -4439,12 +4431,12 @@ const decorateEnemyCard = (slot, data, card, icon) => {
 
 	addContent(card.cardContainerElement, `<div class="card enemy">${stats}${icon}</div>`);
 
-	card.cardElement = querySelector('.card', card.cardContainerElement);
+	card.cardElement = querySelector(".card", card.cardContainerElement);
 
-	card.damageAmountElement = querySelector('.damage b', card.cardContainerElement);
-	card.turnsAmountElement = querySelector('.turns b', card.cardContainerElement);
-	card.shieldAmountElement = querySelector('.shield b', card.cardContainerElement);
-	card.healthAmountElement = querySelector('.health b', card.cardContainerElement);
+	card.damageAmountElement = querySelector(".damage b", card.cardContainerElement);
+	card.turnsAmountElement = querySelector(".turns b", card.cardContainerElement);
+	card.shieldAmountElement = querySelector(".shield b", card.cardContainerElement);
+	card.healthAmountElement = querySelector(".health b", card.cardContainerElement);
 
 	checkDangerStatus(card);
 };
@@ -4685,53 +4677,22 @@ const worlds = [
 ];
 
 const updateLockIcons = () => {
-	querySelectorAll('.lock', rootElement).forEach((lockElement) => {
+	querySelectorAll(".lock", rootElement).forEach((lockElement) => {
 		lockElement.remove();
 	});
-	querySelectorAll('.locked', rootElement).forEach((lockedElement) => {
+	querySelectorAll(".locked", rootElement).forEach((lockedElement) => {
 		addContent(lockedElement, getSVG(svgs.LOCK));
 	});
 };
 
 let wallet = null;
 
-const redirectToNear = (event) => {
-	event.preventDefault();
-	event.stopPropagation();
-	if (wallet !== null) {
-		wallet['requestSignIn']();
-	}
-};
-
-const initNear = () => {
-	window.nearApi
-		.connect({
-			nodeUrl: 'https://rpc.testnet.near.org',
-			walletUrl: 'https://wallet.testnet.near.org',
-			helperUrl: 'https://helper.testnet.near.org',
-			explorerUrl: 'https://explorer.testnet.near.org',
-			networkId: 'testnet',
-			keyStore: new window.nearApi.keyStores.BrowserLocalStorageKeyStore(),
-		})
-		.then((near) => {
-			wallet = new window.nearApi.WalletConnection(near);
-
-			if (wallet['isSignedIn']()) {
-				currentGameState.loggedInUsingNear = true;
-			} else {
-				currentGameState.loggedInUsingNear = false;
-			}
-
-			updatePremiumState();
-		});
-};
-
 const initDrand = () => {
 	if (currentGameState.seed == null) {
-		fetch('https://api.drand.sh/public/latest')
+		fetch("https://api.drand.sh/public/latest")
 			.then((response) => response.json())
 			.then((data) => {
-				currentGameState.seed = data['randomness'].hashCode();
+				currentGameState.seed = data["randomness"].hashCode();
 				random = prng(currentGameState.seed, currentGameState.seedPosition);
 				saveGame(currentGameState);
 			});
@@ -4744,8 +4705,6 @@ const setup = () => {
 	initDrand();
 
 	loadGame(true);
-
-	initNear();
 
 	initSound();
 
